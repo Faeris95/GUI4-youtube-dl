@@ -10,42 +10,9 @@ from PyQt5.QtCore import pyqtSignal
 
 
 """Wrote by Faeris95 2015"""
-"""For any question/help : info.depannage95@gmail.com"""
-
-"""MAJ 0.9.2"""
-"""Correction d'un bug de os.rename lors de lien symbolique en destination - shutil.copyfile()
-   Désactivation permanente de la barre de défilement horizontal """
-
-"""MAJ 0.9.5"""
-"""Threading pour le titrage des musiques"""
-
-"""MAJ 0.9.6"""
-"""Correction d'un bug mineur sur le threading du titrage"""
-
-"""MAJ 1.0"""
-"""Threading sur le downloader"""
-
+"""For any question/help : seb.rolland95@gmail.com"""
 i = 0
 j = 0
-
-
-"""class TitleThread(threading.Thread):
-	def __init__(self,adresse, music, UI):
-		threading.Thread.__init__(self)
-		self.adresse = adresse
-		self.music = music
-		self.UI = UI
-	def run(self):
-		addr = self.recup_titre()
-		self.music.setNom(addr)
-		UI.update(UI,self.music)
-
-		
-
-
-
-	def recup_titre(self):
-		return os.popen('youtube-dl -e ' + self.adresse, 'r').read().rstrip()"""
 
 class Music:
     def __init__(self, adr,i):
@@ -75,10 +42,7 @@ class Music:
 
     def setAdr(self, adr):
         self.adr = adr
-        """newThread = TitleThread(adr,self, UI)
-        newThread.start()"""
         
-        #self.nom = Downloader.recup_titre(Downloader(), adr)
 class TitleThread(QThread):
 	
 	sig = pyqtSignal(Music)
@@ -130,8 +94,6 @@ class DownloaderThread(QThread):
 		for music in self.liste:
 			music.setState("En cours")
 			self.sig.emit(mySignal(i,"En cours"))
-			#self.widget_list[i].setText("En cours")
-			#QtWidgets.QApplication.processEvents()
 			result = self.download.download(music.getAdr())
 			if (result != 0):
 				self.sig.emit(mySignal(-2,-2))
@@ -142,7 +104,6 @@ class DownloaderThread(QThread):
 				
 			i += 1
 		self.sig.emit(mySignal(-1,-1))
-		#https://www.youtube.com/watch?v=6Pl6Ptc6Wyg
 
 	def __del__(self):
 		self.wait()
@@ -153,22 +114,14 @@ class DownloaderThread(QThread):
 class Downloader:
     def __init__(self):
         self.tableau = []
-        # self.music_list = music_list
         self.liste = ['\\Musique', '\\Musiques', '\\Music', '\\Musics', '\\Musik', '\\Musiks']
         self.chemin = "C:"+os.environ["HOMEPATH"]
         self.currentDir = os.path.dirname(os.path.realpath(__file__))
         mp3 = self.currentDir+"\\youtube-dl.exe -q -x --audio-format mp3"
         self.mp3 = shlex.split(mp3)
         self.mp3[0]=self.currentDir+"\\youtube-dl.exe"
-
         self.mp3.append('')
-
-        """self.youtube_dl_MAJ()
-        self.verify()
-        self.check_for_location()
-        self.download()
-        self.end()"""
-
+	
     def youtube_dl_MAJ(self):
         maj = os.popen(self.currentDir+'\\youtube-dl.exe --update', 'r').read()
         if 'setup.py' in maj:
@@ -252,10 +205,6 @@ class Downloader:
         else:
             return a
 
-
-# https://www.youtube.com/watch?v=IWmBCS9S7D0
-# https://www.youtube.com/watch?v=LRnB4iaDIb0
-
 class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
@@ -270,14 +219,11 @@ class UI(QtWidgets.QMainWindow):
         self.Thread.sig[Music].connect(self.update)
         self.DThread = DownloaderThread(self)
         self.DThread.sig[mySignal].connect(self.finish)
-
         self.initUI()
-        
 
     def initUI(self):
         self.center()
         self.setFixedSize(800, 400)
-        # btn_download=QtWidgets.QPushButton
         self.txt = QtWidgets.QLineEdit(self)
         self.txt.resize(600, 20)
         self.txt.move(10, 330)
@@ -340,26 +286,6 @@ class UI(QtWidgets.QMainWindow):
         for but in button:
             but.setEnabled(False)
 
-    
-        #self.update()
-
-    """def telecharger(self, button):
-        i = 0
-        self.disable_Widget(button)
-        for music in self.music_list:
-            self.maj(i)
-            QtWidgets.QApplication.processEvents()
-            result = self.a.download(music.getAdr())
-            if (result != 0):
-                QMessageBox.critical(self, "Erreur",
-                                  "Erreur lors du téléchargement, lien erroné ou youtube-dl n'est pas à jour")
-                QtCore.QCoreApplication.instance().quit
-            else:
-                self.widget_list[i].setText("Téléchargé")
-                QtWidgets.QApplication.processEvents()
-            i += 1
-        QMessageBox.information(self, "Terminé", "Toutes les musiques ont été téléchargées !")
-        self.enable_Widget(button)"""
     def telecharger(self):
         button = [self.btn_telech, self.btn_changer, self.btn_entre]
         self.disable_Widget(button)
@@ -380,9 +306,6 @@ class UI(QtWidgets.QMainWindow):
             QMessageBox.information(self, "Terminé", "Toutes les musiques ont été téléchargées !")
 
     def verify(self):
-        """if os.getuid() == 0:
-            QMessageBox.critical(self, "Erreur", "PythDownloader ne doit pas être lancé en tant que root")
-            QtCore.QCoreApplication.instance().quit"""
         os.chdir("..")
         if not (os.path.exists(os.path.dirname(os.path.realpath(__file__))+'\\youtube-dl.exe')):
             print(os.path.dirname(os.path.realpath(__file__))+'\\youtube-dl.exe')
@@ -431,17 +354,8 @@ class UI(QtWidgets.QMainWindow):
         self.move(qr.topLeft())
 
     def update(self, music):
-        """new = QtWidgets.QTableWidgetItem()
-        new2 = QtWidgets.QTableWidgetItem()
-        new2.setFlags(QtCore.Qt.ItemIsEnabled)
-        new.setFlags(QtCore.Qt.ItemIsEnabled)
-        new.setText(music.getName())
-        new2.setText(music.getState())"""
-        #self.tabListe.setRowCount(music.getIndex() + 1)
         self.widget_listTxt[music.getIndex()].setText(music.getName())
         self.widget_list[music.getIndex()].setText(music.getState())
-        #self.tabListe.setItem(music.getIndex(), 0, new)
-        #self.tabListe.setItem(music.getIndex(), 1, new2)
 
 
 def main():
