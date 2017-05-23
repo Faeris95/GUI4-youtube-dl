@@ -9,10 +9,12 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtCore import pyqtSignal
 
 
-"""Wrote by Faeris95 2015"""
-"""For any question/help : seb.rolland95@gmail.com"""
+"""Written by Faeris95 2015"""
+"""For any question/help : sebastien.rolland@protonmail.com"""
+
 i = 0
 j = 0
+
 
 class Music:
     def __init__(self, adr,i):
@@ -120,8 +122,8 @@ class Downloader:
         mp3 = self.currentDir+"\\youtube-dl.exe -q -x --audio-format mp3"
         self.mp3 = shlex.split(mp3)
         self.mp3[0]=self.currentDir+"\\youtube-dl.exe"
+
         self.mp3.append('')
-	
     def youtube_dl_MAJ(self):
         maj = os.popen(self.currentDir+'\\youtube-dl.exe --update', 'r').read()
         if 'setup.py' in maj:
@@ -196,14 +198,16 @@ class Downloader:
             adr = adr[0:adr.find('&list')]
         self.mp3[5] = adr
         print(self.mp3)
-        a = subprocess.Popen(self.mp3, creationflags = 0x08000000,stderr=True).wait()
+        a = subprocess.run(self.mp3, creationflags = 0x08000000,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         print(a)
+        a=a.returncode
         if (a == 0):
             self.fichier = glob.glob('*.mp3')
             shutil.move(self.fichier[0], self.chemin + self.fichier[0][:-16] + '.mp3')
             return a
         else:
             return a
+
 
 class UI(QtWidgets.QMainWindow):
     def __init__(self):
@@ -219,7 +223,9 @@ class UI(QtWidgets.QMainWindow):
         self.Thread.sig[Music].connect(self.update)
         self.DThread = DownloaderThread(self)
         self.DThread.sig[mySignal].connect(self.finish)
+
         self.initUI()
+        
 
     def initUI(self):
         self.center()
@@ -275,7 +281,7 @@ class UI(QtWidgets.QMainWindow):
         self.btn_changer.clicked.connect(lambda: self.changer_chemin())
         self.btn_entre.clicked.connect(lambda: self.ajouterEntree())
         self.verify()
-        self.setWindowTitle('PythDownloader 1.0')
+        self.setWindowTitle('PythDownloader 1.1')
         self.show()
 
     def enable_Widget(self, button):
