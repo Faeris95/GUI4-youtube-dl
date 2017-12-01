@@ -169,7 +169,7 @@ class Downloader:
             if i == lenght:
                 i = 0
                 while i < lenght:
-                    if os.path.exists(chemin + self.liste[i].upper()):
+                    if os.path.exists(self.chemin + self.liste[i].upper()):
                         self.chemin += self.liste[i].upper()
                         break
                     i += 1
