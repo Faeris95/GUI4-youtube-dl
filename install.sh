@@ -16,7 +16,7 @@ fi
 echo "[Desktop Entry]
 Version=1.0
 Name=YoutubeToMp3
-GenericName=Downloader
+GenericName=Download and Convert Music from YouTube
 Comment=Download video from YouTube to local mp3 file
 Terminal=false
 Exec=/home/$USER/.local/bin/mp3
@@ -24,4 +24,4 @@ Icon=mp3py
 Type=Application
 Categories=Network;Internet;" > ~/.local/share/applications/YoutubeToMp3.desktop
 chmod +x ~/.local/share/applications/YoutubeToMp3.desktop
-sudo pacman -Syu youtube-dl ffmpeg pyqt5-common python-pyqt5 python-pip && sudo pip install PyQt5
+sudo pacman -Syu --needed youtube-dl ffmpeg pyqt5-common python-pyqt5 python-pip && sudo pip install PyQt5
