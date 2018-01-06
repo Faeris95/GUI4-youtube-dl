@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-# -- coding: utf-8 --
 # coding: utf-8
 import os, sys, glob, time, shlex, subprocess, shutil, threading
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -9,11 +8,9 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtCore import pyqtSignal
 
 
-"""Wrote by Faeris95 2015"""
-"""For any question/help : seb.rolland95@gmail.com"""
-
 i = 0
 j = 0
+VERSION = 1.0
 
 
 class Music:
@@ -44,8 +41,6 @@ class Music:
 
     def setAdr(self, adr):
         self.adr = adr
-        """newThread = TitleThread(adr,self, UI)
-        newThread.start()"""
         
        
 class TitleThread(QThread):
@@ -98,8 +93,6 @@ class DownloaderThread(QThread):
 		for music in self.liste:
 			music.setState("En cours")
 			self.sig.emit(mySignal(i,"En cours"))
-			#self.widget_list[i].setText("En cours")
-			#QtWidgets.QApplication.processEvents()
 			result = self.download.download(music.getAdr())
 			if (result != 0):
 				self.sig.emit(mySignal(-2,-2))
@@ -225,7 +218,6 @@ class UI(QtWidgets.QMainWindow):
     def initUI(self):
         self.center()
         self.setFixedSize(800, 400)
-        # btn_download=QtWidgets.QPushButton
         self.txt = QtWidgets.QLineEdit(self)
         self.txt.resize(600, 20)
         self.txt.move(10, 330)
@@ -277,7 +269,7 @@ class UI(QtWidgets.QMainWindow):
         self.btn_changer.clicked.connect(lambda: self.changer_chemin())
         self.btn_entre.clicked.connect(lambda: self.ajouterEntree())
         self.verify()
-        self.setWindowTitle('PythDownloader 1.0')
+        self.setWindowTitle('PythDownloader %s' % VERSION)
         self.show()
 
     def enable_Widget(self, button):
@@ -357,24 +349,14 @@ class UI(QtWidgets.QMainWindow):
         self.move(qr.topLeft())
 
     def update(self, music):
-        """new = QtWidgets.QTableWidgetItem()
-        new2 = QtWidgets.QTableWidgetItem()
-        new2.setFlags(QtCore.Qt.ItemIsEnabled)
-        new.setFlags(QtCore.Qt.ItemIsEnabled)
-        new.setText(music.getName())
-        new2.setText(music.getState())"""
-        #self.tabListe.setRowCount(music.getIndex() + 1)
         self.widget_listTxt[music.getIndex()].setText(music.getName())
         self.widget_list[music.getIndex()].setText(music.getState())
-        #self.tabListe.setItem(music.getIndex(), 0, new)
-        #self.tabListe.setItem(music.getIndex(), 1, new2)
-
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
     ex = UI()
     sys.exit(app.exec_())
 
-
 if __name__ == '__main__':
     main()
+ 
